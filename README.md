@@ -2,8 +2,6 @@
 
 A RESTful API for an e-commerce platform built with Node.js, Express.js, and MySQL, designed to handle user authentication, product management, shopping carts, order processing, and secure payments.
 
-## 📖 Overview
-
 ## 🎯 Features
 - **User Authentication & Authorization**: Secure JWT-based login and role-based access control.
 - **Product Management**: Full CRUD operations for products.
@@ -74,7 +72,7 @@ npm run test:coverage  # Test with coverage
 ```
 
 📂 Project Structure
-
+```bash
 ├── controllers/    # Route controllers
 ├── models/         # Sequelize models
 ├── routes/         # API routes
@@ -84,6 +82,7 @@ npm run test:coverage  # Test with coverage
 ├── images/         # Product images
 ├── server.js       # Entry point
 └── package.json    # Dependencies
+```
 
 🔒 Security
 
