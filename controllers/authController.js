@@ -5,6 +5,8 @@ const { StatusCodes } = require("http-status-codes");
 
 const User = require("../models/User");
 const appError = require("../utils/appError");
+const db = require("../utils/db");
+const creatToken = require("../utils/creatToken");
 
 const saltRounds = 12;
 
@@ -12,18 +14,24 @@ const signUp = asyncHandler(async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  const token = await db.transaction(async (t) => {
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  const user = await User.create({
-    email: email,
-    password: hashedPassword
+    const user = await User.create(
+      {
+        email: email,
+        password: hashedPassword
+      },
+      { transaction: t }
+    );
+
+    return creatToken(user);
   });
 
-  const token = creatToken(user);
   return res.status(StatusCodes.CREATED).json({ token: token });
 });
 
-const longIn = asyncHandler(async (req, res) => {
+const logIn = asyncHandler(async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -47,19 +55,5 @@ const longIn = asyncHandler(async (req, res) => {
 
 module.exports = {
   signUp: signUp,
-  longIn: longIn
-};
-
-const creatToken = (user) => {
-  return jwt.sign(
-    {
-      userId: user.userId,
-      email: user.email,
-      role: user.role
-    },
-    process.env.JWT_SECRET_KEY,
-    {
-      expiresIn: process.env.JWT_EXPIRES
-    }
-  );
+  logIn: logIn
 };

@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const { signUp, longIn } = require("../controllers/authController");
+const { signUp, logIn } = require("../controllers/authController");
 
 const {
   signUpValidator,
@@ -8,6 +8,6 @@ const {
 } = require("../utils/validator/authValidator");
 
 router.post("/signUp", signUpValidator, signUp);
-router.post("/logIn", logInInValidator, longIn);
+router.post("/logIn", logInInValidator, logIn);
 
 module.exports = router;

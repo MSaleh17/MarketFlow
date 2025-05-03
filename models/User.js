@@ -23,9 +23,6 @@ const User = sequelize.define("User", {
     type: DataTypes.ENUM,
     values: ["customer", "admin"],
     defaultValue: "customer"
-  },
-  address: {
-    type: DataTypes.INTEGER
   }
 });
 
