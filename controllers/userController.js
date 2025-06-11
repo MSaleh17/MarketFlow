@@ -1,21 +1,29 @@
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
+const { StatusCodes } = require("http-status-codes");
 
 const User = require("../models/User");
-const { StatusCodes } = require("http-status-codes");
+const appError = require("../utils/appError");
+
+const saltRounds = 12;
 
 //admin only
 const usersList = asyncHandler(async (req, res) => {
-  const limit = req.query?.limit || 25;
-  const offset = req.query?.offset || 0;
+  const limit = parseInt(req.query?.limit) || 25;
+  const offset = parseInt(req.query?.offset) || 0;
 
-  const data = await User.findAll({
+  const { count, rows } = await User.findAndCountAll({
     attributes: ["userId", "email", "firstName", "lastName", "role"],
     offset: offset,
-    limit: limit
+    limit: limit,
+    order: [["createdAt", "DESC"]]
   });
 
-  return res.status(StatusCodes.OK).json(data);
+  return res.status(StatusCodes.OK).json({
+    totalUsers: count,
+    length: rows.length,
+    data: rows
+  });
 });
 
 // admin only
@@ -28,8 +36,15 @@ const getUser = asyncHandler(async (req, res) => {
     attributes: ["userId", "email", "firstName", "lastName", "role"]
   });
 
-  delete user.dataValues.password;
-  return res.status(StatusCodes.OK).json({ user: user });
+  if (!user) {
+    throw new appError(
+      "User not found",
+      StatusCodes.NOT_FOUND,
+      `No user found with ID ${userId}.`
+    );
+  }
+
+  return res.status(StatusCodes.OK).json({ data: user });
 });
 
 //admin only

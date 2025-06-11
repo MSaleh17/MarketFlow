@@ -78,8 +78,8 @@ const createOrder = asyncHandler(async (data) => {
 });
 
 const orderList = asyncHandler(async (req, res) => {
-  const limit = req.query.limit || 25;
-  const offset = req.query.offset || 0;
+  const limit = parseInt(req.query?.limit) || 25;
+  const offset = parseInt(req.query?.offset) || 0;
   const userId = req.user.userId;
 
   const orders = await Order.findAll({

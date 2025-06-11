@@ -80,17 +80,23 @@ const deleteProduct = asyncHandler(async (req, res) => {
 });
 
 const productList = asyncHandler(async (req, res) => {
-  const limit = req.query?.limit || 25;
-  const offset = req.query?.limit || 0;
+  const limit = parseInt(req.query?.limit) || 25;
+  const offset = parseInt(req.query?.offset) || 0;
 
-  const products = await Product.findAll({
+  const { count, rows } = await Product.findAndCountAll({
     where: {
       isDeleted: false
     },
     offset: offset,
-    limit: limit
+    limit: limit,
+    order: [["createdAt", "DESC"]],
   });
-  return res.status(StatusCodes.OK).json(products);
+
+  return res.status(StatusCodes.OK).json({
+    totalProducts: count,
+    length: rows.length,
+    data: rows
+  });
 });
 
 module.exports = {

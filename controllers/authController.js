@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
-const jwt = require("jsonwebtoken");
 const { StatusCodes } = require("http-status-codes");
 
 const User = require("../models/User");
@@ -24,7 +23,7 @@ const signUp = asyncHandler(async (req, res) => {
       },
       { transaction: t }
     );
-
+    
     return creatToken(user);
   });
 
