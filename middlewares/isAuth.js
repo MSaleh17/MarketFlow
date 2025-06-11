@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const errorHandler = require("express-async-handler");
 const { StatusCodes } = require("http-status-codes");
+const appError = require("../utils/appError");
 
 module.exports = errorHandler(async (req, res, next) => {
   const authHeader = req.get("Authorization");

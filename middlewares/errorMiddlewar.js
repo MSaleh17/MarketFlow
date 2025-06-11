@@ -10,5 +10,5 @@ module.exports = (err, req, res, next) => {
   
   return res
     .status(StatusCodes.INTERNAL_SERVER_ERROR)
-    .json({ message: "Something went wrong" });
+    .json({ message: "Internal server error" });
 };
