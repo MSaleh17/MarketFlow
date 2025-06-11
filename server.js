@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 require("dotenv").config();
-
+const swaggerUi = require("swagger-ui-express");
 
 const sequelize = require("./utils/db");
 const authRouter = require("./routes/authRoute");
@@ -11,6 +11,7 @@ const cartRoute = require("./routes/cartRoute");
 const paymetRoute = require("./routes/paymentRoute");
 const orderRoute = require("./routes/orderRoute");
 const errorMiddlewar = require("./middlewares/errorMiddlewar");
+const swaggerSpec = require("./swagger");
 
 //--------------------------
 const Cart = require("./models/Cart");
@@ -43,6 +44,8 @@ OrderItem.belongsTo(Product, { foreignKey: "productId" });
 
 const app = express();
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use("/api/v1", paymetRoute);
 
 app.use(express.json());
@@ -66,8 +69,9 @@ app.use("*", (req, res, next) => {
 
 app.use(errorMiddlewar);
 
+
 sequelize
-  .sync({ force: false })
+  .sync({ force: true })
   .then((res) => {
     app.listen(process.env.PORT);
   })
